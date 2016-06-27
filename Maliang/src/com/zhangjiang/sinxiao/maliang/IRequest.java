@@ -2,18 +2,11 @@ package com.zhangjiang.sinxiao.maliang;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 public abstract class IRequest {
-	Handler mHandler;
-
-	public void setHandler(Handler mHandler) {
-		this.mHandler = mHandler;
-	}
-
 	String key;
 	String path;
 	String url;
@@ -28,6 +21,7 @@ public abstract class IRequest {
 	/**
 	 * 执行刷新控件操作
 	 */
+	@SuppressWarnings("deprecation")
 	public void paintSkin() {
 		if (view instanceof ImageView) {
 			((ImageView) view).setImageBitmap(bp);

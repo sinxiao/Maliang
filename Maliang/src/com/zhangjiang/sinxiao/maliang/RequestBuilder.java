@@ -1,37 +1,32 @@
 package com.zhangjiang.sinxiao.maliang;
 
-import android.os.Handler;
 import android.view.View;
 
 public class RequestBuilder {
 
 	private String path;
-	private View view;
 	private RequestBuilder builder = null;
-	private Handler ml;
-	public RequestBuilder(Handler maliang) {
-		ml = maliang;
+
+	public RequestBuilder() {
 	}
 
-	RequestBuilder load(String path) {
+	public RequestBuilder load(String path) {
+		if (builder == null) {
+			builder = new RequestBuilder();
+		}
 		builder.path = path;
 		return builder;
 	}
 
-	void into(View view) {
-		builder.view = view;
-		IRequest req = null;
-		if (path != null && (path.startsWith("http") || path.startsWith("ftp"))) {
-			req = new RemoteRequest();
-			req.url = path;
-		} else {
-			req = new LocalRequest();
-			req.path = path;
+	public void into(View view) {
+		if (builder == null) {
+			builder = new RequestBuilder();
 		}
-		req.view = view;
-		
-		Dispatch.getInstence().add(req);
-		// return builder;
-	}
+		IRequest req = new RemoteRequest();
+		req.setUrl(path);
+		req.setView(view);
 
+		Dispatch.getInstence().add(req);
+
+	}
 }

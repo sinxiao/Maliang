@@ -11,18 +11,21 @@ import java.util.regex.Pattern;
 
 import android.util.Log;
 
-public class Dispatch {
+public class Dispatch extends Thread {
 	private static final String TAG = "Dispatch";
-	private Dispatch(){}
+
+	private Dispatch() {
+	}
+
 	private static Dispatch dispatch;
-	public static Dispatch getInstence()
-	{
-		if(dispatch==null)
-		{
+
+	public static Dispatch getInstence() {
+		if (dispatch == null) {
 			dispatch = new Dispatch();
 		}
-		return dispatch ;
+		return dispatch;
 	}
+
 	private int getNumCores() {
 		// Private Class to display only CPU devices in the directory listing
 		class CpuFilter implements FileFilter {
@@ -55,7 +58,7 @@ public class Dispatch {
 
 	private final int CPU_NUM = getNumCores();
 	private final BlockingQueue<IRequest> requests = new ArrayBlockingQueue<IRequest>(
-			CPU_NUM * 2 * 8, false);
+			CPU_NUM * 2 * 2, false);
 
 	private ThreadFactory threadFactory = new ThreadFactory() {
 		public Thread newThread(Runnable r) {
@@ -72,7 +75,7 @@ public class Dispatch {
 		try {
 			if (!run) {
 				run = true;
-				performNow();
+				start();
 			}
 			requests.put(req);
 		} catch (InterruptedException e) {
@@ -85,6 +88,10 @@ public class Dispatch {
 		run = false;
 		executor.shutdownNow();
 		requests.clear();
+	}
+
+	public void run() {
+		performNow();
 	}
 
 	private boolean run = false;

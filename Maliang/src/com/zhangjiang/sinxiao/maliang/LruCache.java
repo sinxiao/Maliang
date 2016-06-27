@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -21,20 +22,27 @@ import android.os.Environment;
  * 
  */
 public class LruCache implements Cache {
-	private LruCache(){}
+
+	@SuppressWarnings("unused")
+	private LruCache() {
+	}
+
 	private static LruCache cache;
-	public static LruCache getInstence()
-	{
-		if(cache==null){
+
+	public static LruCache getInstence() {
+		if (cache == null) {
 			return null;
 		}
 		return cache;
 	}
+
 	private Context mContxt;
+
 	private android.util.LruCache<String, Bitmap> lrucache;
 
 	ExecutorService executors = Executors.newFixedThreadPool(2);
 
+	@SuppressLint("DefaultLocale")
 	public void storeDisk(String key, Bitmap bp) {
 		File f = new File(Environment.getExternalStorageDirectory(),
 				mContxt.getPackageName());
@@ -88,9 +96,11 @@ public class LruCache implements Cache {
 	}
 
 	public LruCache(Context mContext) {
-		mContxt = mContext;
-		lrucache = new android.util.LruCache<String, Bitmap>(16 * 2);
-		cache = this;
+		if (mContxt == null) {
+			mContxt = mContext;
+			lrucache = new android.util.LruCache<String, Bitmap>(16 * 2);
+			cache = this;
+		}
 	}
 
 	@Override
